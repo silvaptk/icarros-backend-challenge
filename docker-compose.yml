@@ -1,0 +1,76 @@
+services:
+  app: # Run the application
+    build:
+      dockerfile: ./dockerfiles/app.dockerfile
+      context: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+      - ~/.m2:/root/.m2
+    env_file: .env
+
+  mvn: # Run Maven-related commands against the app.
+    image: maven:3.9.9-eclipse-temurin-21-jammy
+    volumes:
+      - .:/app
+    entrypoint: "mvn"
+    stdin_open: true
+    working_dir: /app
+    tty: true
+    env_file: .env
+  javadocs: # Serve javadocs
+    build:
+      dockerfile: ./dockerfiles/javadocs.dockerfile
+      context: .
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
+    volumes:
+      - serve-javadocs-dependencies:/app/node_modules
+      - ./target/reports/apidocs:/app/docs
+
+  tests: # Run all tests
+    build: 
+      dockerfile: ./dockerfiles/tests.dockerfile
+      context: .
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/app
+      - ~/.m2:/root/.m2
+    env_file: .env
+  unit-tests: # Run only unit tests
+    build:
+      dockerfile: ./dockerfiles/unit-tests.dockerfile
+      context: .
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/app
+      - ~/.m2:/root/.m2
+    env_file: .env
+  integration-tests: # Run only integration tests
+    build:
+      dockerfile: ./dockerfiles/integration-tests.dockerfile
+      context: .
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/app
+      - ~/.m2:/root/.m2
+    env_file: .env
+  e2e-tests: # Run only E2E tests
+    build:
+      dockerfile: ./dockerfiles/e2e-tests.dockerfile
+      context: .
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/app
+      - ~/.m2:/root/.m2
+    env_file: .env
+
+volumes:
+  serve-javadocs-dependencies:
