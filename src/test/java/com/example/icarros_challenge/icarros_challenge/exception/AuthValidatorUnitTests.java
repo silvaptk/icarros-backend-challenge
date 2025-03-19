@@ -16,6 +16,15 @@ public class AuthValidatorUnitTests {
         validator = new AuthValidator();
     }
 
+    @Test 
+    public void testMissingPassword() {
+        try {
+            validator.validatePassword(null);
+        } catch (RuntimeException exception) {
+            Assertions.assertEquals(PasswordIsMissingException.class, exception.getClass());
+        }
+    }
+
     @Test
     public void testEmptyPassword() {
         try {

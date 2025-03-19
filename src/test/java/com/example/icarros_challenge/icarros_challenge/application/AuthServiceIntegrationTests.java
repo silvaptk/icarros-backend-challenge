@@ -10,6 +10,7 @@ import static org.mockito.Mockito.mock;
 
 import com.example.icarros_challenge.icarros_challenge.dto.ValidatePasswordRequest;
 import com.example.icarros_challenge.icarros_challenge.exception.AuthValidator;
+import com.example.icarros_challenge.icarros_challenge.exception.PasswordIsMissingException;
 import com.example.icarros_challenge.icarros_challenge.exception.PasswordTooShortException;
 import com.example.icarros_challenge.icarros_challenge.exception.PasswordWithRepeatedCharactersException;
 import com.example.icarros_challenge.icarros_challenge.exception.PasswordWithoutLowercaseLettersException;
@@ -30,6 +31,17 @@ public class AuthServiceIntegrationTests {
 
     public void customSetup(AuthValidator validator) {
         service = new AuthService(validator);
+    }
+
+    @Test
+    public void testValidatorWithNullPassword() {
+        this.customSetup(new AuthValidator());
+
+        try {
+            service.validatePassword(new ValidatePasswordRequest(null));
+        } catch (RuntimeException exception) {
+            Assertions.assertEquals(PasswordIsMissingException.class, exception.getClass());
+        }
     }
 
     @Test

@@ -11,6 +11,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.example.icarros_challenge.icarros_challenge.exception.PasswordIsMissingException;
 import com.example.icarros_challenge.icarros_challenge.exception.PasswordTooShortException;
 import com.example.icarros_challenge.icarros_challenge.exception.PasswordWithRepeatedCharactersException;
 import com.example.icarros_challenge.icarros_challenge.exception.PasswordWithUnexpectedCharacterException;
@@ -38,13 +39,21 @@ public class ValidatePasswordTests {
     }
 
     @Test
+    public void testNullPassword() {
+        String jsonEncodedPassword = "{}";
+
+        ValidationException expectedException = new PasswordIsMissingException();
+
+        this.testValidationException(jsonEncodedPassword, expectedException);
+    }
+
+    @Test
     public void testEmptyPassword() {
         String jsonEncodedPassword = this.encodePasswordAsJson("");
 
         ValidationException expectedException = new PasswordTooShortException(9);
 
         this.testValidationException(jsonEncodedPassword, expectedException);
-
     }
 
     @Test
