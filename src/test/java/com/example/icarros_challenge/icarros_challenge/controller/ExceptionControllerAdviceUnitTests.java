@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import static org.mockito.Mockito.mock;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.mock.http.MockHttpInputMessage;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 
 import com.example.icarros_challenge.icarros_challenge.application.LogService;
 import com.example.icarros_challenge.icarros_challenge.dto.ErrorResponse;
@@ -35,7 +36,18 @@ public class ExceptionControllerAdviceUnitTests {
     }
 
     @Test
-    public void testWithInvalidBody() {
+    public void testWithUnsupportedMediaException() {
+        HttpMediaTypeNotSupportedException providedException = new HttpMediaTypeNotSupportedException("DUMMY_MESSAGE");
+        InvalidBodyException expectedException = new InvalidBodyException();
+
+        ErrorResponse responseBody = handler.handleInvalidBodyException(providedException).getBody();
+
+        Assertions.assertEquals(expectedException.getMessage(), responseBody.message());
+        Assertions.assertEquals(expectedException.getCode(), responseBody.code());
+    }
+
+    @Test
+    public void testWithUnreadableMessageException() {
         HttpMessageNotReadableException providedException = new HttpMessageNotReadableException("DUMMY_MESSAGE", new MockHttpInputMessage("".getBytes()));
         InvalidBodyException expectedException = new InvalidBodyException();
 
