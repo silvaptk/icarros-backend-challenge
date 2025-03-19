@@ -38,6 +38,11 @@ public class ExceptionControllerAdvice {
         return new ResponseEntity<>(new ErrorResponse(exception.getMessage(), exception.getCode()), HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * This method handles unreadable bodies
+     * @param providedException
+     * @return An `ErrorResponse` telling that the body is invalid
+     */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleInvalidBodyException(HttpMessageNotReadableException providedException) {
         InvalidBodyException exception = new InvalidBodyException();
