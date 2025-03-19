@@ -20,6 +20,7 @@ public class AuthValidator {
      * @return `true` indicating that the password is valid
      */
     public Boolean validatePassword(String password) {
+        this.validatePasswordClass(password);
         this.validatePasswordLength(password);
         this.validatePasswordLowercaseLetters(password);
         this.validatePasswordUppercaseLetters(password);
@@ -29,6 +30,17 @@ public class AuthValidator {
         this.validatePasswordUnexpectedCharacters(password);
 
         return true;
+    }
+
+    /**
+     * Validates the password class. This is needed because the 
+     * client may have sent no password at all
+     * @param password
+     */
+    private void validatePasswordClass(String password) {
+        if (password == null || password.getClass() != String.class) {
+            throw new PasswordIsMissingException();
+        }
     }
 
     /**
