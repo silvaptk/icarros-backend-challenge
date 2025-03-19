@@ -24,6 +24,7 @@ import com.example.icarros_challenge.icarros_challenge.exception.ValidationExcep
 
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
+import io.restassured.specification.RequestSpecification;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -40,9 +41,9 @@ public class ValidatePasswordTests {
     }
 
     @Test
-    public void testWithInvalidBody() {
+    public void testWithNoBody() {
         String jsonEncodedPassword = "";
-        
+
         ValidationException expectedException = new InvalidBodyException();
 
         this.testValidationException(jsonEncodedPassword, expectedException);
@@ -134,9 +135,15 @@ public class ValidatePasswordTests {
     }
 
     private void testValidationException(String body, ValidationException exception) {
-        given()
-                .contentType("application/json")
-                .body(body)
+        RequestSpecification request = given();
+
+        if (body == null) {
+            request.contentType("text/plain");
+        } else {
+            request.contentType("application/json").body(body);
+        }
+
+        request
                 .when()
                 .post("/auth/validate-password")
                 .then()

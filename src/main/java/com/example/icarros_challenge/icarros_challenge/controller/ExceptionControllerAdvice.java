@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -45,6 +46,20 @@ public class ExceptionControllerAdvice {
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleInvalidBodyException(HttpMessageNotReadableException providedException) {
+        InvalidBodyException exception = new InvalidBodyException();
+
+        this.logService.handleMessage(exception.toString());
+
+        return new ResponseEntity<>(new ErrorResponse(exception.getMessage(), exception.getCode()), HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * This method handles unsupported bodies
+     * @param providedException
+     * @return An `ErrorResponse` telling that the body is invalid
+     */
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidBodyException(HttpMediaTypeNotSupportedException providedException) {
         InvalidBodyException exception = new InvalidBodyException();
 
         this.logService.handleMessage(exception.toString());
