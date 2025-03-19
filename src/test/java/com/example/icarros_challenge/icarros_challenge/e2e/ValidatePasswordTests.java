@@ -122,8 +122,8 @@ public class ValidatePasswordTests {
                 .post("/auth/validate-password")
                 .then()
                 .statusCode(400)
-                .body("error.code", equalTo(exception.getCode()))
-                .body("error.message", equalTo(exception.getMessage()));
+                .body("code", equalTo(exception.getCode()))
+                .body("message", equalTo(exception.getMessage()));
     }
 
     private String encodePasswordAsJson(String password) {
