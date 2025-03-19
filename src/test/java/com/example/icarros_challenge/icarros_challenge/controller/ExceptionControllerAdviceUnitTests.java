@@ -5,13 +5,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import static org.mockito.Mockito.mock;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.mock.http.MockHttpInputMessage;
 
 import com.example.icarros_challenge.icarros_challenge.application.LogService;
 import com.example.icarros_challenge.icarros_challenge.dto.ErrorResponse;
+import com.example.icarros_challenge.icarros_challenge.exception.InvalidBodyException;
 import com.example.icarros_challenge.icarros_challenge.exception.PasswordTooShortException;
 
 @Tag("unit")
 public class ExceptionControllerAdviceUnitTests {
+
     private ExceptionControllerAdvice handler;
     private LogService logServiceMock;
 
@@ -28,6 +32,17 @@ public class ExceptionControllerAdviceUnitTests {
         ErrorResponse responseBody = handler.handleException(exception).getBody();
 
         Assertions.assertEquals(exception.getMessage(), responseBody.message());
+    }
+
+    @Test
+    public void testWithInvalidBody() {
+        HttpMessageNotReadableException providedException = new HttpMessageNotReadableException("DUMMY_MESSAGE", new MockHttpInputMessage("".getBytes()));
+        InvalidBodyException expectedException = new InvalidBodyException();
+
+        ErrorResponse responseBody = handler.handleInvalidBodyException(providedException).getBody();
+
+        Assertions.assertEquals(expectedException.getMessage(), responseBody.message());
+        Assertions.assertEquals(expectedException.getCode(), responseBody.code());
     }
 
     @Test

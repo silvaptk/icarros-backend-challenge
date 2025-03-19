@@ -11,6 +11,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.example.icarros_challenge.icarros_challenge.exception.InvalidBodyException;
 import com.example.icarros_challenge.icarros_challenge.exception.PasswordIsMissingException;
 import com.example.icarros_challenge.icarros_challenge.exception.PasswordTooShortException;
 import com.example.icarros_challenge.icarros_challenge.exception.PasswordWithRepeatedCharactersException;
@@ -36,6 +37,15 @@ public class ValidatePasswordTests {
     @BeforeEach
     public void setup() {
         RestAssured.port = port;
+    }
+
+    @Test
+    public void testWithInvalidBody() {
+        String jsonEncodedPassword = "";
+        
+        ValidationException expectedException = new InvalidBodyException();
+
+        this.testValidationException(jsonEncodedPassword, expectedException);
     }
 
     @Test
