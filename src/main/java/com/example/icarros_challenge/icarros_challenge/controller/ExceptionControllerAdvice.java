@@ -1,5 +1,8 @@
 package com.example.icarros_challenge.icarros_challenge.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,8 +13,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.example.icarros_challenge.icarros_challenge.application.LogService;
 import com.example.icarros_challenge.icarros_challenge.dto.ErrorResponse;
+import com.example.icarros_challenge.icarros_challenge.dto.ErrorsResponse;
 import com.example.icarros_challenge.icarros_challenge.exception.InvalidBodyException;
 import com.example.icarros_challenge.icarros_challenge.exception.ValidationException;
+import com.example.icarros_challenge.icarros_challenge.exception.ValidationsException;
 
 /**
  * Class responsible for handling exceptions thrown in the entire 
@@ -29,14 +34,24 @@ public class ExceptionControllerAdvice {
 
     /**
      * This method will handle validation-related exceptions
-     * @param exception A `ValidationException` instance 
+     * @param exception A `ValidationException` instance
      * @return An `ErrorResponse` describing the validation violation that happened
      */
-    @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<ErrorResponse> handleValidationException(ValidationException exception) {
-        this.logService.handleMessage(exception.toString());
+    @ExceptionHandler(ValidationsException.class)
+    public ResponseEntity<ErrorsResponse> handleValidationsException(ValidationsException exception) {
+        String exceptionsMessage = "";
 
-        return new ResponseEntity<>(new ErrorResponse(exception.getMessage(), exception.getCode()), HttpStatus.BAD_REQUEST);
+        List<ValidationException> exceptions = exception.getExceptions();
+        ArrayList<ErrorResponse> responses = new ArrayList<>();
+
+        for (ValidationException validationException : exceptions) {
+            exceptionsMessage += validationException.toString() + "\n";
+            responses.add(new ErrorResponse(validationException.getMessage(), validationException.getCode()));
+        }
+
+        this.logService.handleMessage(exceptionsMessage);
+
+        return new ResponseEntity<>(new ErrorsResponse(responses), HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -68,7 +83,7 @@ public class ExceptionControllerAdvice {
     }
 
     /**
-     * This method handles all exceptions 
+     * This method handles all exceptions
      * @param exception an `Exception` instance
      * @return An `ErrorResponse` describing the error that happened
      */
