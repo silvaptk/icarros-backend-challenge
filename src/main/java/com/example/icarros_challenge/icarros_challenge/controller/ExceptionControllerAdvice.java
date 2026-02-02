@@ -1,17 +1,15 @@
 package com.example.icarros_challenge.icarros_challenge.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.icarros_challenge.icarros_challenge.controller.dto.ErrorResponse;
+import com.example.icarros_challenge.icarros_challenge.controller.exception.MethodNotSupportedException;
+import com.example.icarros_challenge.icarros_challenge.controller.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import com.example.icarros_challenge.icarros_challenge.application.LogService;
-import com.example.icarros_challenge.icarros_challenge.dto.ErrorResponse;
-import com.example.icarros_challenge.icarros_challenge.exception.InvalidBodyException;
-import com.example.icarros_challenge.icarros_challenge.exception.ValidationException;
 
 /**
  * Class responsible for handling exceptions thrown in the entire 
@@ -20,63 +18,47 @@ import com.example.icarros_challenge.icarros_challenge.exception.ValidationExcep
 @ControllerAdvice
 public class ExceptionControllerAdvice {
 
-    @Autowired
-    private final LogService logService;
-
-    public ExceptionControllerAdvice(LogService logService) {
-        this.logService = logService;
-    }
+    public ExceptionControllerAdvice() {}
 
     /**
-     * This method will handle validation-related exceptions
-     * @param exception A `ValidationException` instance 
-     * @return An `ErrorResponse` describing the validation violation that happened
+     * This method handles exceptions thrown due to requests for resources
+     * that were not implemented
+     * @param exception an {@link ResourceNotFoundException} instance
+     * @return An {@link ErrorResponse} describing the error that happened
      */
-    @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<ErrorResponse> handleValidationException(ValidationException exception) {
-        this.logService.handleMessage(exception.toString());
-
-        return new ResponseEntity<>(new ErrorResponse(exception.getMessage(), exception.getCode()), HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> handleException(NoResourceFoundException exception) {
+        return new ResponseEntity<>(
+                ErrorResponse.fromDefaultException(new ResourceNotFoundException()),
+                HttpStatus.NOT_FOUND
+        );
     }
 
     /**
-     * This method handles unreadable bodies
-     * @param providedException
-     * @return An `ErrorResponse` telling that the body is invalid
+     * This method handles exceptions thrown due to requests for existing
+     * resources with incorrect HTTP methods
+     * @param exception an {@link HttpRequestMethodNotSupportedException} instance
+     * @return An {@link ErrorResponse} describing the error that happened
      */
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidBodyException(HttpMessageNotReadableException providedException) {
-        InvalidBodyException exception = new InvalidBodyException();
-
-        this.logService.handleMessage(exception.toString());
-
-        return new ResponseEntity<>(new ErrorResponse(exception.getMessage(), exception.getCode()), HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handleException(HttpRequestMethodNotSupportedException exception) {
+        return new ResponseEntity<>(
+                ErrorResponse.fromDefaultException(new MethodNotSupportedException()),
+                HttpStatus.METHOD_NOT_ALLOWED
+        );
     }
 
     /**
-     * This method handles unsupported bodies
-     * @param providedException
-     * @return An `ErrorResponse` telling that the body is invalid
-     */
-    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidBodyException(HttpMediaTypeNotSupportedException providedException) {
-        InvalidBodyException exception = new InvalidBodyException();
-
-        this.logService.handleMessage(exception.toString());
-
-        return new ResponseEntity<>(new ErrorResponse(exception.getMessage(), exception.getCode()), HttpStatus.BAD_REQUEST);
-    }
-
-    /**
-     * This method handles all exceptions 
-     * @param exception an `Exception` instance
-     * @return An `ErrorResponse` describing the error that happened
+     * This method handles all exceptions
+     * @param exception an {@link Exception} instance
+     * @return An {@link ErrorResponse} describing the error that happened
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception exception) {
-        this.logService.handleException(exception);
-
-        return new ResponseEntity<>(new ErrorResponse(exception.getMessage(), "UNEXPECTED"), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(
+                new ErrorResponse("Erro inesperado. Estamos trabalhando para resolver.", "UNEXPECTED"),
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 
 }
