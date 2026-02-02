@@ -27,7 +27,7 @@ public abstract class Validator<ValidatingSubject> {
         for (ValidationRule<ValidatingSubject> rule : registeredRules) {
             if (!rule.validate(validatingSubject)) {
                 return false;
-            };
+            }
         }
 
         return true;

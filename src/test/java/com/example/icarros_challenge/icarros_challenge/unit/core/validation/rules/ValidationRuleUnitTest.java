@@ -34,7 +34,7 @@ public class ValidationRuleUnitTest {
     }
 
     private ValidationRule<Object> createDummyRule(Validator<Object> validator, Integer priority) {
-        return new ValidationRule<Object>(validator, priority) {
+        return new ValidationRule<>(validator, priority) {
             @Override
             public Boolean validate(Object object) {
                 return null;

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ShortPasswordValidationRule extends ValidationRule<String> {
 
-    private static int MIN_PASSWORD_LENGTH = 9;
+    private static final int MIN_PASSWORD_LENGTH = 9;
 
     public ShortPasswordValidationRule(PasswordValidator validator) {
         super(validator);

@@ -22,7 +22,7 @@ public class ValidatorIntegrationTest {
 
     @Test
     public void testRuleRegistration() {
-        Validator<Object> validator = new Validator<Object>() {};
+        Validator<Object> validator = new Validator<>() {};
         this.createDummyValidationRule(validator, "1", true, 1);
         this.createDummyValidationRule(validator, "2", true, 1);
 
@@ -33,7 +33,7 @@ public class ValidatorIntegrationTest {
 
     @Test
     public void testThatRulesAreExecutedUntilOneFails() {
-        Validator<Object> validator = new Validator<Object>() {};
+        Validator<Object> validator = new Validator<>() {};
         this.createDummyValidationRule(validator, "1", true, 1);
         this.createDummyValidationRule(validator, "2", false, 1);
         this.createDummyValidationRule(validator, "3", true, 1);
@@ -45,7 +45,7 @@ public class ValidatorIntegrationTest {
 
     @Test
     public void testThatRulesAreExecutedInPriorityOrder() {
-        Validator<Object> validator = new Validator<Object>() {};
+        Validator<Object> validator = new Validator<>() {};
         this.createDummyValidationRule(validator, "1", true, 1);
         this.createDummyValidationRule(validator, "2", true, 1);
         this.createDummyValidationRule(validator, "3", true, 0);
@@ -59,7 +59,7 @@ public class ValidatorIntegrationTest {
     private void createDummyValidationRule(
             Validator<Object> validator, String ruleId, Boolean validationResult, Integer priority
     ) {
-        new ValidationRule<Object>(validator, priority) {
+        new ValidationRule<>(validator, priority) {
             @Override
             public Boolean validate(Object object) {
                 executedRules.add(ruleId);

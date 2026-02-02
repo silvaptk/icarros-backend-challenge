@@ -13,8 +13,8 @@ public record ErrorResponse(String message, String code) {
 
     /**
      * Creates an instance of the class based on {@link DefaultException}
-     * @param exception
-     * @return
+     * @param exception The base exception
+     * @return An instance of {@link ErrorResponse}
      */
     public static ErrorResponse fromDefaultException(DefaultException exception) {
         return new ErrorResponse(exception.getMessage(), exception.getCode());

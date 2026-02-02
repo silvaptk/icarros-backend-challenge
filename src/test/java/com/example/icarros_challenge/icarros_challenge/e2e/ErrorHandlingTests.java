@@ -1,10 +1,8 @@
 package com.example.icarros_challenge.icarros_challenge.e2e;
 
-import com.example.icarros_challenge.icarros_challenge.controller.exception.DefaultException;
 import com.example.icarros_challenge.icarros_challenge.controller.exception.MethodNotSupportedException;
 import com.example.icarros_challenge.icarros_challenge.controller.exception.ResourceNotFoundException;
 import io.restassured.RestAssured;
-import io.restassured.response.Validatable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;

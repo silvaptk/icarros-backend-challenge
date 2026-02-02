@@ -23,7 +23,7 @@ public class PatternValidationRuleUnitTest {
     }
 
     private PatternValidationRule createRule(String patternDefinition) {
-        Validator<String> validator = new Validator<String>() {};
+        Validator<String> validator = new Validator<>() {};
         return new PatternValidationRule(validator, patternDefinition) {};
     }
 
