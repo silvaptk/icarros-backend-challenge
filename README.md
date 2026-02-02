@@ -1,10 +1,35 @@
 # Itaú Unibanco Backend Challenge -- REST API
 
-# Tabela de conteúdo
+# Índice/Table of contents
 
-- [pt-BR]
-  - [Sobre]
-  - [Visão geral de 0]
+- [pt-BR](#pt-br)
+  - [Sobre](#sobre)
+  - [Visão geral de arquitetura](#visão-geral-de-arquitetura)
+    - [Camada _Controller_](#camada-_controller_)
+    - [Camada _Application_](#camada-_application_)
+    - [Camada _Core_](#camada-_core_)
+  - [Detalhes da solução](#detalhes-da-solução)
+    - [A base do sistema de validação](#a-base-do-sistema-de-validação)
+    - [Mecanismo de prioridade](#mecanismo-de-prioridade)
+    - [Como os princípios de SOLID se aplicam?](#como-os-princípios-solid-se-aplicam)
+    - [Implementação da validação da senha](#implementação-da-validação-da-senha)
+    - [Exemplo de extensibilidade](#exemplo-de-extensibilidade)
+  - [Executando a aplicação](#executando-a-aplicação)
+  - [Informação adicional](#informação-adicional)
+- [en-US](#en-us)
+  - [About](#about)
+  - [Architecture overview](#architecture-overview)
+    - [Controller Layer](#controller-layer)
+    - [Application Layer](#application-layer)
+    - [Core Layer](#core-layer)
+  - [Solution details](#solution-details)
+    - [The validation system basis](#the-validation-system-basis)
+    - [Priority mechanism](#priority-mechanism)
+    - [How SOLID applies?](#how-solid-applies)
+    - [Password validation implementation](#password-validation-implementation)
+    - [Extensibility example](#extensibility-example)
+  - [Running the application](#running-the-application)
+  - [Additional information](#additional-information)
 
 # pt-BR
 
@@ -35,19 +60,19 @@ dependências fluindo na seguinte direção
 controller → application → core
 ```
 
-## Camada _Controller_
+### Camada _Controller_
 
 Responsável por lidar com as requisições HTTP diretamente, devolvendo as 
 respostas apropriadas. Os _controllers_ delegam a aplicação das regras de 
 negócio às classes da camada _Application_
 
-## Camada _Application_
+### Camada _Application_
 
 Contém classes responsáveis por orquestrar as regras de negócio. A 
 classe `AuthService`, por exemplo, lida com a lógica relacionada a 
 autenticação e coordena o processo de validação.
 
-## Camada _Core_
+### Camada _Core_
 
 É a camada que contém as regras de negócio e a lógica do domínio, 
 completamente desacoplada de _frameworks_.
@@ -320,14 +345,6 @@ Docker is used to simplify execution:
 -   `docker compose up app`
 -   `docker compose up [tests|unit-tests|integration-tests|e2e-tests]`
 -   `docker compose run mvn`
-
-## Running the application
-
-A Docker setup was made so everyone can easily run the application and its tests
-
-- `docker compose up app` runs the application that can be reached through the port 8080 on `localhost`
-- `docker compose up [tests|unit-tests|integration-tests|e2e-tests]` runs the application tests
-- `docker compose run mvn` allows the developer to run Maven commands against the project (like `clean install` or `dependency:resolve`)
 
 ## Additional information
 
